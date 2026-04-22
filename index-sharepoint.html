@@ -418,7 +418,7 @@ async function spGet(list, filter='', select='') {
   if (filter) url += `&$filter=${encodeURIComponent(filter)}`;
   if (select) url += `&$select=${select}`;
   const r = await fetch(url, {
-    headers: { 'Accept': 'application/json;odata=verbose' }
+    headers: { 'Accept': 'application/json;odata=verbose' }, credentials: 'include'
   });
   if (!r.ok) throw new Error(`GET ${list} failed: ${r.status}`);
   const d = await r.json();
@@ -427,13 +427,12 @@ async function spGet(list, filter='', select='') {
 
 async function spPost(list, data) {
   const metaUrl = `${SITE_URL}/_api/web/lists/getbytitle('${list}')`;
-  const metaR = await fetch(metaUrl, { headers: { 'Accept': 'application/json;odata=verbose' } });
+  const metaR = await fetch(metaUrl, { headers: { 'Accept': 'application/json;odata=verbose' }, credentials: 'include' });
   const metaD = await metaR.json();
   const type = metaD.d.ListItemEntityTypeFullName;
 
   const digestR = await fetch(`${SITE_URL}/_api/contextinfo`, {
-    method: 'POST',
-    headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
+    method: 'POST', credentials: 'include', headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
   });
   const digestD = await digestR.json();
   const digest = digestD.d.GetContextWebInformation.FormDigestValue;
@@ -454,13 +453,12 @@ async function spPost(list, data) {
 
 async function spPatch(list, id, data) {
   const metaUrl = `${SITE_URL}/_api/web/lists/getbytitle('${list}')`;
-  const metaR = await fetch(metaUrl, { headers: { 'Accept': 'application/json;odata=verbose' } });
+  const metaR = await fetch(metaUrl, { headers: { 'Accept': 'application/json;odata=verbose' }, credentials: 'include' });
   const metaD = await metaR.json();
   const type = metaD.d.ListItemEntityTypeFullName;
 
   const digestR = await fetch(`${SITE_URL}/_api/contextinfo`, {
-    method: 'POST',
-    headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
+    method: 'POST', credentials: 'include', headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
   });
   const digestD = await digestR.json();
   const digest = digestD.d.GetContextWebInformation.FormDigestValue;
@@ -482,8 +480,7 @@ async function spPatch(list, id, data) {
 
 async function spDelete(list, id) {
   const digestR = await fetch(`${SITE_URL}/_api/contextinfo`, {
-    method: 'POST',
-    headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
+    method: 'POST', credentials: 'include', headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
   });
   const digestD = await digestR.json();
   const digest = digestD.d.GetContextWebInformation.FormDigestValue;
