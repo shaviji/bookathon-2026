@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>TRC MM + GTS Team | 2026 Bookathon Tracker</title>
+<style>
+:root{--p1:#4f46e5;--p2:#7c3aed;--p3:#a855f7;--acc:#f59e0b;--bg:#f1f0ff;--text:#1e1b4b;--muted:#6b7280;--border:#e5e7eb;--sh:0 2px 12px rgba(79,70,229,.13);--r:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e1b4b,#4f46e5,#a855f7);padding:16px;}
+.lcard{background:#fff;border-radius:20px;padding:32px;max-width:440px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center;}
+.lcard .logo{font-size:42px;margin-bottom:6px;}
+.lcard h1{font-size:19px;font-weight:800;color:var(--text);line-height:1.3;}
+.lcard .sub{color:var(--muted);font-size:13px;margin:6px 0 20px;}
+.lcard h2{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:left;text-transform:uppercase;letter-spacing:.5px;}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mbtn{padding:10px 8px;border:2px solid var(--border);border-radius:10px;background:#fafafa;cursor:pointer;font-size:13px;font-weight:600;color:var(--text);transition:all .2s;display:flex;align-items:center;gap:8px;text-align:left;}
+.mbtn:hover{border-color:var(--p1);background:#eef2ff;transform:translateY(-1px);}
+.mbtn.admin-btn{border-color:#f59e0b;background:#fffbeb;}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0;}
+.divline{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:12px;}
+.divline::before,.divline::after{content:'';flex:1;height:1px;background:var(--border);}
+.nmform{display:flex;gap:8px;}
+.nmform input{flex:1;padding:10px 14px;border:2px solid var(--border);border-radius:9px;font-size:13px;outline:none;}
+.nmform input:focus{border-color:var(--p1);}
+.btnp{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border:none;padding:10px 18px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;}
+#app{display:none;min-height:100vh;}
+.hdr{background:linear-gradient(135deg,#1e1b4b,#4f46e5,#7c3aed);color:#fff;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(79,70,229,.4);}
+.hdr-l{display:flex;align-items:center;gap:10px;}
+.hdr-title{font-size:14px;font-weight:800;line-height:1.2;}
+.hdr-title span{display:block;font-size:10px;font-weight:400;color:rgba(255,255,255,.6);}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.uchip{background:rgba(255,255,255,.15);border-radius:20px;padding:5px 12px 5px 6px;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;}
+.swbtn{background:rgba(255,255,255,.12);border:none;color:#fff;padding:5px 10px;border-radius:7px;font-size:11px;cursor:pointer;}
+.adm-chip{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;}
+.nav{background:#fff;border-bottom:2px solid var(--border);display:flex;padding:0 20px;overflow-x:auto;gap:2px;}
+.ntab{padding:11px 13px;font-size:12px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;}
+.ntab:hover{color:var(--p1);}
+.ntab.on{color:var(--p1);border-bottom-color:var(--p1);background:linear-gradient(to bottom,transparent,#eef2ff);}
+.ntab.admin-tab{color:#f59e0b!important;}
+.ntab.admin-tab.on{border-bottom-color:#f59e0b;background:linear-gradient(to bottom,transparent,#fffbeb);}
+.wrap{padding:16px 20px;max-width:1080px;margin:0 auto;}
+.view{display:none;}.view.on{display:block;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.card{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:14px;}
+.ctitle{font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px;}
+.hero{background:linear-gradient(135deg,#4f46e5,#7c3aed,#a855f7);border-radius:14px;padding:18px 20px;margin-bottom:14px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.hero-left h2{font-size:19px;font-weight:900;}
+.hero-left p{font-size:12px;opacity:.8;margin-top:2px;}
+.hero-ring{position:relative;width:88px;height:88px;flex-shrink:0;}
+.hero-ring svg{transform:rotate(-90deg);}
+.rbg{fill:none;stroke:rgba(255,255,255,.2);stroke-width:8;}
+.rfill{fill:none;stroke:#f59e0b;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
+.rtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rtxt .big{font-size:21px;font-weight:900;color:#fff;}
+.rtxt .sm{font-size:9px;color:rgba(255,255,255,.7);font-weight:600;}
+.sc{border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.sc-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.sc-num{font-size:21px;font-weight:900;line-height:1;}
+.sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;opacity:.75;margin-top:2px;}
+.sc.blue{background:#dbeafe;color:#1e40af;}.sc.blue .sc-icon{background:#3b82f6;color:#fff;}
+.sc.green{background:#d1fae5;color:#065f46;}.sc.green .sc-icon{background:#10b981;color:#fff;}
+.sc.amber{background:#fef3c7;color:#92400e;}.sc.amber .sc-icon{background:#f59e0b;color:#fff;}
+.sc.purple{background:#ede9fe;color:#4c1d95;}.sc.purple .sc-icon{background:#8b5cf6;color:#fff;}
+.brow{display:flex;flex-wrap:wrap;gap:6px;}
+.bdg{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:16px;font-size:11px;font-weight:700;}
+.bdg.got{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#78350f;border:1px solid #fcd34d;}
+.bdg.no{background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb;}
+.be{padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;transition:all .2s;display:flex;align-items:flex-start;gap:10px;}
+.be:hover{border-color:var(--p1);background:#f5f3ff;}
+.be-num{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.be-body{flex:1;min-width:0;}
+.be-title{font-size:13px;font-weight:700;color:var(--text);}
+.be-meta{font-size:11px;color:var(--muted);margin-top:1px;}
+.be-note{font-size:11px;color:#4b5563;font-style:italic;margin-top:4px;border-left:2px solid var(--p3);padding-left:6px;}
+.be-tk{font-size:11px;color:var(--acc);font-weight:700;margin-top:3px;}
+.stars{color:var(--acc);font-size:12px;}
+.gtag{display:inline-block;background:#ede9fe;color:#5b21b6;border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:4px;}
+.metag{font-size:10px;background:var(--acc);color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px;}
+.lbrow{border-radius:10px;margin-bottom:7px;overflow:hidden;border:1.5px solid var(--border);}
+.lbrow.me{border-color:var(--acc);}
+.lb-top{display:flex;align-items:center;padding:10px 13px;gap:12px;cursor:pointer;background:#fafafa;transition:background .15s;user-select:none;}
+.lbrow.me .lb-top{background:#fffbeb;}
+.lbrow.champ .lb-top{background:linear-gradient(135deg,#1e1b4b,#4f46e5);}
+.lbav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.lbinfo{flex:1;min-width:0;}
+.lbn{font-size:13px;font-weight:700;color:var(--text);}
+.lbs{font-size:11px;color:var(--muted);margin-top:1px;}
+.lbrow.champ .lbn{color:#fff;}.lbrow.champ .lbs{color:rgba(255,255,255,.6);}
+.lbprog{flex:2;}.bw{background:#e5e7eb;border-radius:5px;height:7px;overflow:hidden;}
+.bf{height:7px;border-radius:5px;transition:width 1s ease;}
+.lbc{font-size:13px;font-weight:800;color:var(--text);min-width:40px;text-align:right;}
+.lbrow.champ .lbc{color:#fff;}
+.lb-chev{font-size:10px;color:var(--muted);margin-left:4px;transition:transform .25s;flex-shrink:0;}
+.lb-chev.open{transform:rotate(180deg);}
+.lb-panel{display:none;padding:10px 14px 12px;background:#fff;border-top:1px solid var(--border);}
+.lb-panel.open{display:block;}
+.lb-panel-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.lb-book{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:8px;margin-bottom:4px;background:var(--bg);}
+.lb-bidx{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lb-btxt{flex:1;min-width:0;}.lb-btitle{font-size:12px;font-weight:700;color:var(--text);}
+.lb-bsub{font-size:10px;color:var(--muted);margin-top:1px;}
+.lb-bgenre{background:#ede9fe;color:#5b21b6;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;flex-shrink:0;}
+.fi{padding:13px 15px;border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px;background:#fff;}
+.fi:hover{border-color:#c4b5fd;}
+.fih{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.fiav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.fin{font-size:13px;font-weight:700;color:var(--text);}
+.fit{font-size:10px;color:var(--muted);}
+.fibook{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-radius:9px;padding:9px 12px;margin-bottom:8px;border-left:3px solid var(--p1);}
+.fibt{font-size:13px;font-weight:700;color:var(--p1);}
+.fibm{font-size:11px;color:var(--muted);margin-top:2px;}
+.fiins{font-size:12px;color:#374151;font-style:italic;border-left:3px solid var(--acc);padding-left:8px;margin-bottom:8px;}
+.krow{display:flex;gap:6px;flex-wrap:wrap;}
+.kbtn{background:#f9fafb;border:1.5px solid var(--border);border-radius:16px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;}
+.kbtn:hover,.kbtn.on{background:#ede9fe;border-color:var(--p3);color:var(--p2);}
+.kcnt{background:#fff;border-radius:8px;padding:0 5px;font-size:10px;}
+.prow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:7px;}
+.pinfo{flex:1;}.pt{font-size:13px;font-weight:700;color:var(--text);}.pa{font-size:11px;color:var(--muted);}
+.pbar{flex:2;}.pbw{background:#e5e7eb;border-radius:5px;height:8px;overflow:hidden;}
+.pbf{height:8px;border-radius:5px;background:linear-gradient(90deg,var(--p1),var(--p3));}
+.pvc{font-size:12px;font-weight:700;color:var(--text);min-width:40px;text-align:right;}
+.vbtn{padding:6px 14px;border:2px solid var(--p1);background:#fff;color:var(--p1);border-radius:7px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+.vbtn.v{background:var(--p1);color:#fff;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.fg label{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.4px;}
+.fg input,.fg select,.fg textarea{padding:9px 12px;border:2px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;transition:border .2s;background:#fafafa;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--p1);background:#fff;}
+.fg textarea{resize:vertical;min-height:72px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.full{grid-column:1/-1;}
+.spick{display:flex;gap:4px;}
+.spick span{font-size:26px;cursor:pointer;color:#d1d5db;transition:color .15s;user-select:none;}
+.spick span.on{color:var(--acc);}
+.bsub{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border:none;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.bsub:hover{opacity:.9;transform:translateY(-1px);}
+.bsub:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.shdr h2{font-size:17px;font-weight:800;color:var(--text);}
+.shdr p{font-size:12px;color:var(--muted);margin-top:2px;}
+.empty{text-align:center;padding:28px 16px;color:var(--muted);}
+.empty .ei{font-size:38px;margin-bottom:8px;}
+.empty h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.toast{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--sh);z-index:9999;transform:translateY(70px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.loading{text-align:center;padding:20px;color:var(--muted);font-size:13px;}
+.spin{display:inline-block;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.adm-btn{padding:9px 18px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.adm-btn.green{background:#10b981;color:#fff;}.adm-btn.red{background:#ef4444;color:#fff;}
+.adm-btn:hover{opacity:.9;}
+.adm-table{width:100%;border-collapse:collapse;font-size:12px;}
+.adm-table th{background:var(--p1);color:#fff;padding:9px 11px;text-align:left;font-size:11px;text-transform:uppercase;}
+.adm-table td{padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.adm-table tr:hover td{background:#f5f3ff;}
+.del-btn{background:none;border:none;cursor:pointer;color:#ef4444;font-size:14px;padding:2px 6px;border-radius:5px;}
+.admin-banner{background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:14px;padding:16px 20px;margin-bottom:14px;color:#fff;}
+.adm-stat{background:rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;text-align:center;flex:1;min-width:100px;}
+.adm-stat .n{font-size:24px;font-weight:900;color:#f59e0b;}
+.adm-stat .l{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.adm-stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.rec-banner{background:linear-gradient(135deg,#064e3b,#065f46);border-radius:14px;padding:16px 20px;margin-bottom:14px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.rec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.rcard{background:#fff;border-radius:14px;padding:16px;box-shadow:var(--sh);border:1.5px solid var(--border);transition:all .2s;position:relative;}
+.rcard:hover{border-color:#10b981;transform:translateY(-2px);}
+.rcard.featured{border-color:#f59e0b;background:linear-gradient(135deg,#fffbeb,#fff);}
+.rcard-title{font-size:14px;font-weight:800;color:var(--text);}
+.rcard-author{font-size:12px;color:var(--muted);margin-top:2px;margin-bottom:10px;}
+.rcard-why{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:8px;padding:10px 12px;margin-bottom:8px;border-left:3px solid #10b981;font-size:12px;color:#065f46;}
+.rcard-insight{background:#f8f7ff;border-radius:8px;padding:9px 12px;margin-bottom:8px;border-left:3px solid var(--p1);font-size:12px;color:#374151;}
+.rcard-actions{display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border);}
+.ract-btn{padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text);transition:all .2s;}
+.ract-btn:hover{border-color:var(--p1);color:var(--p1);}
+.ract-btn.active{background:#d1fae5;border-color:#10b981;color:#065f46;}
+.rec-by{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:5px;}
+.rec-by-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;}
+.featured-badge{position:absolute;top:12px;left:12px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;}
+.rec-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.rec-filter{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:2px solid var(--border);background:#fff;color:var(--muted);transition:all .2s;}
+.rec-filter.on{background:var(--p1);border-color:var(--p1);color:#fff;}
+.rc-input-row{display:flex;gap:6px;margin-top:8px;}
+.rc-input-row input{flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;outline:none;font-family:inherit;}
+.rc-send{padding:7px 14px;background:var(--p1);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;}
+.bf-chip{padding:5px 12px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);transition:all .2s;user-select:none;display:inline-block;margin:2px;}
+.bf-chip.on{background:var(--p1);border-color:var(--p1);color:#fff;}
+@media(max-width:680px){.g2,.fgrid,.rec-grid{grid-template-columns:1fr;}.g4{grid-template-columns:1fr 1fr;}.mgrid{grid-template-columns:1fr;}.wrap{padding:12px;}.lbprog{display:none;}}
+</style>
+</head>
+<body>
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="lcard">
+    <div class="logo">📚</div>
+    <h1>TRC MM + GTS Team<br>2026 Bookathon Tracker</h1>
+    <p class="sub">Your personal journey to 20 books. Inspire your teammates.</p>
+    <h2>Who are you?</h2>
+    <div class="mgrid" id="mgrid"><div class="loading"><span class="spin">⏳</span> Loading members...</div></div>
+    <div class="divline">New to the Bookathon?</div>
+    <div class="nmform">
+      <input type="text" id="new-name" placeholder="Your full name" maxlength="30" onkeydown="if(event.key==='Enter')join()"/>
+      <button class="btnp" onclick="join()">Join 🎉</button>
+    </div>
+  </div>
+</div>
+<!-- APP -->
+<div id="app">
+  <header class="hdr">
+    <div class="hdr-l">
+      <span style="font-size:21px;">📚</span>
+      <div class="hdr-title">TRC MM + GTS Team | 2026 Bookathon<span>Personal goal: 20 books each · 2026</span></div>
+    </div>
+    <div class="hdr-r">
+      <div class="uchip">
+        <div class="av" id="hav" style="width:26px;height:26px;font-size:11px;"></div>
+        <span id="hname"></span>
+        <span id="adm-chip-hdr" style="display:none;" class="adm-chip">ADMIN</span>
+      </div>
+      <button class="swbtn" onclick="logout()">Switch</button>
+    </div>
+  </header>
+  <nav class="nav">
+    <button class="ntab on" onclick="go('dashboard')" id="tab-dashboard">🏠 Dashboard</button>
+    <button class="ntab" onclick="go('log')" id="tab-log">📖 Log a Book</button>
+    <button class="ntab" onclick="go('leaderboard')" id="tab-leaderboard">🏆 Leaderboard</button>
+    <button class="ntab" onclick="go('feed')" id="tab-feed">👥 Team Feed</button>
+    <button class="ntab" onclick="go('poll')" id="tab-poll">🗳️ Poll</button>
+    <button class="ntab" onclick="go('recommend')" id="tab-recommend">📚 Recommend</button>
+    <button class="ntab admin-tab" onclick="go('admin')" id="tab-admin" style="display:none;">🔐 Admin</button>
+  </nav>
+  <div class="wrap">
+    <!-- DASHBOARD -->
+    <div class="view on" id="view-dashboard">
+      <div class="hero">
+        <div class="hero-left">
+          <h2 id="dgreet">Welcome back! 👋</h2>
+          <p id="dmsg">Let's get reading!</p>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button onclick="go('leaderboard')" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🏆 Leaderboard</button>
+            <button onclick="go('feed')" style="background:rgba(255,255,255,.12);border:none;color:#fff;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">👥 Team Feed</button>
+          </div>
+        </div>
+        <div class="hero-ring">
+          <svg width="88" height="88" viewBox="0 0 88 88">
+            <circle class="rbg" cx="44" cy="44" r="35"/>
+            <circle class="rfill" id="dring" cx="44" cy="44" r="35" stroke-dasharray="219.9" stroke-dashoffset="219.9"/>
+          </svg>
+          <div class="rtxt"><span class="big" id="dcnt">0</span><span class="sm">/ 20</span></div>
+        </div>
+      </div>
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="sc blue"><div class="sc-icon">📚</div><div><div class="sc-num" id="sread">0</div><div class="sc-lbl">Books Read</div></div></div>
+        <div class="sc green"><div class="sc-icon">🎯</div><div><div class="sc-num" id="sleft">20</div><div class="sc-lbl">Remaining</div></div></div>
+        <div class="sc amber"><div class="sc-icon">⭐</div><div><div class="sc-num" id="savg">—</div><div class="sc-lbl">Avg Rating</div></div></div>
+        <div class="sc purple"><div class="sc-icon">📂</div><div><div class="sc-num" id="sgen">0</div><div class="sc-lbl">Genres</div></div></div>
+      </div>
+      <div class="g2">
+        <div class="card" style="padding:13px;"><div class="ctitle">🏅 Badges</div><div class="brow" id="dbadges"></div></div>
+        <div class="card" style="padding:13px;">
+          <div class="ctitle">📊 2026 Progress</div>
+          <div style="height:8px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin-bottom:7px;">
+            <div id="dbar" style="height:8px;border-radius:6px;background:linear-gradient(90deg,#4f46e5,#a855f7);transition:width 1s ease;width:0%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-weight:600;"><span>0</span><span>5</span><span>10</span><span>15</span><span>20 🏆</span></div>
+          <div style="margin-top:10px;" id="dnext"></div>
+        </div>
+      </div>
+      <div class="card" style="padding:13px;">
+        <div class="ctitle" style="display:flex;justify-content:space-between;"><span>📚 Your Reading Log</span><span id="dcount-tag" style="font-size:11px;font-weight:600;color:var(--muted);"></span></div>
+        <div id="mybooks"><div class="loading"><span class="spin">⏳</span> Loading...</div></div>
+      </div>
+    </div>
+    <!-- LOG A BOOK -->
+    <div class="view" id="view-log">
+      <div class="shdr"><div><h2>📖 Log a Book</h2><p>Add a finished book to your 2026 log</p></div></div>
+      <div class="card">
+        <form id="bform" onsubmit="logBook(event)">
+          <div class="fgrid">
+            <div class="fg"><label>Your Name</label><input type="text" id="fm" readonly style="background:#f3f4f6;color:#6b7280;"/></div>
+            <div class="fg"><label>Date Finished</label><input type="date" id="fd"/></div>
+            <div class="fg"><label>Book Title *</label><input type="text" id="ft" placeholder="e.g. Atomic Habits" required/></div>
+            <div class="fg"><label>Author *</label><input type="text" id="fa" placeholder="e.g. James Clear" required/></div>
+            <div class="fg"><label>Genre *</label>
+              <select id="fg2" required><option value="">Select genre...</option><option>Self-Help</option><option>Business &amp; Leadership</option><option>Biography</option><option>Fiction</option><option>Science &amp; Technology</option><option>History</option><option>Psychology</option><option>Finance</option><option>Other</option></select>
+            </div>
+            <div class="fg"><label>Rating *</label>
+              <div class="spick" id="spick"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
+            </div>
+            <div class="fg full"><label>Thoughts &amp; Summary *</label><textarea id="fs" placeholder="What did you learn? Would you recommend it?" required></textarea></div>
+            <div class="fg full"><label>Key Takeaway (optional)</label><input type="text" id="ftk" placeholder="One sentence that captures the book's essence"/></div>
+          </div>
+          <button type="submit" class="bsub" id="log-btn">📚 Log This Book →</button>
+        </form>
+      </div>
+    </div>
+    <!-- LEADERBOARD -->
+    <div class="view" id="view-leaderboard">
+      <div class="shdr"><div><h2>🏆 Leaderboard</h2><p>Click any row to see their reading list</p></div></div>
+      <div class="card" style="padding:13px;"><div id="lbList"><div class="loading"><span class="spin">⏳</span> Loading...</div></div></div>
+    </div>
+    <!-- FEED -->
+    <div class="view" id="view-feed">
+      <div class="shdr"><div><h2>👥 Team Feed</h2><p>See what teammates are reading — give them kudos!</p></div></div>
+      <div id="feedList"><div class="loading"><span class="spin">⏳</span> Loading...</div></div>
+    </div>
+    <!-- POLL -->
+    <div class="view" id="view-poll">
+      <div class="shdr"><div><h2>🗳️ Monthly Book Poll</h2><p>Nominate and vote on next month's read</p></div></div>
+      <div class="g2">
+        <div class="card" style="padding:13px;">
+          <div class="ctitle">📋 Nominate <span style="font-size:10px;background:#f59e0b;color:#fff;border-radius:4px;padding:2px 7px;margin-left:6px;">Admin only</span></div>
+          <div id="poll-admin-form" style="display:none;">
+            <form onsubmit="nominate(event)">
+              <div class="fg"><label>Title *</label><input type="text" id="pt" placeholder="Book title" required/></div>
+              <div class="fg"><label>Author *</label><input type="text" id="pa" placeholder="Author name" required/></div>
+              <button type="submit" class="bsub" style="font-size:12px;padding:9px 18px;">Nominate 📚</button>
+            </form>
+          </div>
+          <div id="poll-nonadmin-msg" style="font-size:13px;color:var(--muted);padding:8px 0;">Only the Admin can add nominations. You can vote below! 🗳️</div>
+        </div>
+        <div class="card" style="padding:13px;">
+          <div class="ctitle">📊 <span id="pmonth"></span> Poll</div>
+          <div id="plist"><div class="loading"><span class="spin">⏳</span> Loading...</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- RECOMMEND -->
+    <div class="view" id="view-recommend">
+      <div class="rec-banner">
+        <div><h2>📚 Team Recommendations</h2><p>Books your teammates think everyone should read</p></div>
+        <button onclick="openRecForm()" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 16px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;">+ Recommend a Book</button>
+      </div>
+      <div id="rec-form-card" style="display:none;background:#fff;border-radius:14px;padding:20px;box-shadow:var(--sh);border:1.5px solid var(--border);margin-bottom:14px;">
+        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>✍️ Recommend a Book</span>
+          <button onclick="closeRecForm()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);">✕</button>
+        </div>
+        <div class="fgrid">
+          <div class="fg"><label>Book Title *</label><input type="text" id="rec-title" placeholder="e.g. Atomic Habits"/></div>
+          <div class="fg"><label>Author *</label><input type="text" id="rec-author" placeholder="e.g. James Clear"/></div>
+          <div class="fg"><label>Genre</label>
+            <select id="rec-genre"><option value="Other">Select...</option><option>Self-Help</option><option>Business &amp; Leadership</option><option>Biography</option><option>Fiction</option><option>Science &amp; Technology</option><option>History</option><option>Psychology</option><option>Finance</option><option>Other</option></select>
+          </div>
+          <div class="fg"><label>Difficulty</label>
+            <select id="rec-diff"><option value="Easy">😊 Easy</option><option value="Moderate">🧠 Moderate</option><option value="Dense">💪 Dense</option></select>
+          </div>
+          <div class="fg full"><label>Why Recommend? *</label><textarea id="rec-why" placeholder="What makes this book special?"></textarea></div>
+          <div class="fg full"><label>Who Should Read It? *</label><input type="text" id="rec-who" placeholder="e.g. Anyone managing a team"/></div>
+          <div class="fg full"><label>Key Insight *</label><input type="text" id="rec-insight" placeholder="One powerful idea from this book"/></div>
+          <div class="fg full"><label>Best For</label>
+            <div style="margin-top:4px;">
+              <span class="bf-chip" onclick="toggleBF(this)">👤 Leaders</span>
+              <span class="bf-chip" onclick="toggleBF(this)">🌱 Everyone</span>
+              <span class="bf-chip" onclick="toggleBF(this)">💼 Managers</span>
+              <span class="bf-chip" onclick="toggleBF(this)">🚀 Entrepreneurs</span>
+              <span class="bf-chip" onclick="toggleBF(this)">🎯 Self-improvers</span>
+              <span class="bf-chip" onclick="toggleBF(this)">🧠 Deep Thinkers</span>
+            </div>
+          </div>
+        </div>
+        <button onclick="submitRec()" class="bsub" id="rec-submit-btn">📚 Submit Recommendation</button>
+      </div>
+      <div class="rec-filters">
+        <button class="rec-filter on" onclick="filterRec('all',this)">All</button>
+        <button class="rec-filter" onclick="filterRec('featured',this)">⭐ Featured</button>
+        <button class="rec-filter" onclick="filterRec('Self-Help',this)">🧠 Self-Help</button>
+        <button class="rec-filter" onclick="filterRec('Business & Leadership',this)">💼 Business</button>
+        <button class="rec-filter" onclick="filterRec('Biography',this)">👤 Biography</button>
+        <button class="rec-filter" onclick="filterRec('Fiction',this)">📖 Fiction</button>
+        <button class="rec-filter" onclick="filterRec('Psychology',this)">🔬 Psychology</button>
+        <button class="rec-filter" onclick="filterRec('Finance',this)">💰 Finance</button>
+      </div>
+      <div class="rec-grid" id="rec-grid"><div class="loading"><span class="spin">⏳</span> Loading...</div></div>
+    </div>
+    <!-- ADMIN -->
+    <div class="view" id="view-admin">
+      <div class="admin-banner">
+        <h2>🔐 Admin Panel</h2>
+        <p style="font-size:12px;opacity:.6;margin-top:2px;">Full team data control</p>
+        <div class="adm-stats-row" id="adm-stats-row"></div>
+      </div>
+      <div class="card" style="padding:13px;">
+        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>📚 All Team Books</span>
+          <button class="adm-btn green" onclick="exportTeamCSV()">📊 Export CSV</button>
+        </div>
+        <div id="adm-members-list"><div class="loading"><span class="spin">⏳</span> Loading...</div></div>
+      </div>
+      <div class="card" style="padding:13px;">
+        <div class="ctitle" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>🗳️ Poll Management</span>
+          <button class="adm-btn red" onclick="resetPoll()">Reset Poll</button>
+        </div>
+        <div id="adm-poll"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ CONFIG ═══════════════════════════════════════════════════
+const SITE_URL = 'https://amazon.sharepoint.com/sites/2026Bookathon';
+const ADMIN_USER = 'Avijit Sharma';
+const ADMIN_PIN  = '3712';
+const C = ['#4f46e5','#e8563a','#f59e0b','#10b981','#8b5cf6','#06b6d4','#ec4899','#f97316','#0ea5e9','#6366f1'];
+const BADGES = [
+  {icon:'🚀',label:'Kickoff',req:1},{icon:'📖',label:'Trio Reader',req:3},
+  {icon:'⭐',label:'Halfway Hero',req:10},{icon:'💨',label:'Sprint Star',req:15},
+  {icon:'🏆',label:'Champion',req:20}
+];
+const KUDOS = [{e:'👏',l:'Clap'},{e:'🔥',l:'Fire'},{e:'💡',l:'Insightful'},{e:'📚',l:'Must Read'}];
+
+// ═══ SHAREPOINT API ═══════════════════════════════════════════
+async function spGet(list, filter='', select='') {
+  let url = `${SITE_URL}/_api/web/lists/getbytitle('${list}')/items?$top=500`;
+  if (filter) url += `&$filter=${encodeURIComponent(filter)}`;
+  if (select) url += `&$select=${select}`;
+  const r = await fetch(url, {
+    headers: { 'Accept': 'application/json;odata=verbose' }
+  });
+  if (!r.ok) throw new Error(`GET ${list} failed: ${r.status}`);
+  const d = await r.json();
+  return d.d.results;
+}
+
+async function spPost(list, data) {
+  const metaUrl = `${SITE_URL}/_api/web/lists/getbytitle('${list}')`;
+  const metaR = await fetch(metaUrl, { headers: { 'Accept': 'application/json;odata=verbose' } });
+  const metaD = await metaR.json();
+  const type = metaD.d.ListItemEntityTypeFullName;
+
+  const digestR = await fetch(`${SITE_URL}/_api/contextinfo`, {
+    method: 'POST',
+    headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
+  });
+  const digestD = await digestR.json();
+  const digest = digestD.d.GetContextWebInformation.FormDigestValue;
+
+  const body = JSON.stringify({ __metadata: { type }, ...data });
+  const r = await fetch(`${SITE_URL}/_api/web/lists/getbytitle('${list}')/items`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json;odata=verbose',
+      'Content-Type': 'application/json;odata=verbose',
+      'X-RequestDigest': digest
+    },
+    body
+  });
+  if (!r.ok) { const e = await r.text(); throw new Error(`POST ${list} failed: ${e}`); }
+  return await r.json();
+}
+
+async function spPatch(list, id, data) {
+  const metaUrl = `${SITE_URL}/_api/web/lists/getbytitle('${list}')`;
+  const metaR = await fetch(metaUrl, { headers: { 'Accept': 'application/json;odata=verbose' } });
+  const metaD = await metaR.json();
+  const type = metaD.d.ListItemEntityTypeFullName;
+
+  const digestR = await fetch(`${SITE_URL}/_api/contextinfo`, {
+    method: 'POST',
+    headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
+  });
+  const digestD = await digestR.json();
+  const digest = digestD.d.GetContextWebInformation.FormDigestValue;
+
+  const body = JSON.stringify({ __metadata: { type }, ...data });
+  const r = await fetch(`${SITE_URL}/_api/web/lists/getbytitle('${list}')/items(${id})`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json;odata=verbose',
+      'Content-Type': 'application/json;odata=verbose',
+      'X-RequestDigest': digest,
+      'X-HTTP-Method': 'MERGE',
+      'If-Match': '*'
+    },
+    body
+  });
+  if (!r.ok) throw new Error(`PATCH ${list}(${id}) failed: ${r.status}`);
+}
+
+async function spDelete(list, id) {
+  const digestR = await fetch(`${SITE_URL}/_api/contextinfo`, {
+    method: 'POST',
+    headers: { 'Accept': 'application/json;odata=verbose', 'Content-Length': '0' }
+  });
+  const digestD = await digestR.json();
+  const digest = digestD.d.GetContextWebInformation.FormDigestValue;
+  const r = await fetch(`${SITE_URL}/_api/web/lists/getbytitle('${list}')/items(${id})`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json;odata=verbose',
+      'X-RequestDigest': digest,
+      'X-HTTP-Method': 'DELETE',
+      'If-Match': '*'
+    }
+  });
+  if (!r.ok) throw new Error(`DELETE ${list}(${id}) failed: ${r.status}`);
+}
+
+// ═══ HELPERS ══════════════════════════════════════════════════
+const ini = n => n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const col = (n, members) => { const m = members.find(x=>x.MemberName===n); return m ? C[m.ColorIndex % C.length] : C[0]; };
+let PR = 0, CU = null, IS_ADMIN = false;
+let _members = [], _books = [], _poll = [], _recs = [], _comments = [];
+let REC_FILTER = 'all';
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ═══ STAR PICKER ══════════════════════════════════════════════
+document.querySelectorAll('#spick span').forEach(s => {
+  s.addEventListener('click', () => {
+    PR = +s.dataset.v;
+    document.querySelectorAll('#spick span').forEach((x,i) => x.classList.toggle('on', i < PR));
+  });
+});
+
+// ═══ LOGIN ════════════════════════════════════════════════════
+async function loadMembers() {
+  try {
+    _members = await spGet('Members');
+    renderLogin();
+  } catch(e) {
+    document.getElementById('mgrid').innerHTML = `<p style="color:#ef4444;font-size:12px;grid-column:1/-1;padding:8px;">⚠️ Could not load members. Are you on the Amazon network?<br><small>${e.message}</small></p>`;
+  }
+}
+
+function renderLogin() {
+  const g = document.getElementById('mgrid');
+  if (!_members.length) {
+    g.innerHTML = '<p style="color:#9ca3af;font-size:12px;grid-column:1/-1;text-align:center;">No members yet — be the first to join!</p>';
+    return;
+  }
+  g.innerHTML = _members.map(m => {
+    const isAdm = m.MemberName === ADMIN_USER;
+    const cnt = _books.filter(b => b.Title === m.MemberName).length;
+    return `<button class="mbtn ${isAdm?'admin-btn':''}" onclick="li('${m.MemberName.replace(/'/g,"\\'")}')">
+      <div class="av" style="background:${C[m.ColorIndex%C.length]};width:30px;height:30px;font-size:11px;">${ini(m.MemberName)}</div>
+      <div>
+        <div style="font-weight:700;font-size:13px;">${m.MemberName}${isAdm?' 🔐':''}</div>
+        <div style="font-size:10px;color:var(--muted);">${cnt}/20 books</div>
+      </div>
+    </button>`;
+  }).join('');
+}
+
+async function li(n) {
+  if (n === ADMIN_USER) {
+    const pin = prompt('🔐 Enter Admin PIN (or cancel for regular login):');
+    IS_ADMIN = (pin === ADMIN_PIN);
+    if (pin !== null && pin !== '' && !IS_ADMIN) toast('❌ Wrong PIN — logged in as regular user');
+  } else { IS_ADMIN = false; }
+  CU = n;
+  sessionStorage.setItem('bk_user', n);
+  sessionStorage.setItem('bk_admin', IS_ADMIN ? '1' : '0');
+  await boot();
+}
+
+async function join() {
+  const n = document.getElementById('new-name').value.trim();
+  if (!n) { toast('Please enter your name'); return; }
+  try {
+    const ci = _members.length % C.length;
+    await spPost('Members', { Title: n, MemberName: n, MemberEmail: '', ColorIndex: ci, Joined: new Date().toISOString() });
+    toast('🎉 Welcome to the Bookathon, ' + n + '!');
+    _members = await spGet('Members');
+    await li(n);
+  } catch(e) { toast('❌ Could not join: ' + e.message); }
+}
+
+function logout() {
+  CU = null; IS_ADMIN = false;
+  sessionStorage.removeItem('bk_user');
+  sessionStorage.removeItem('bk_admin');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  renderLogin();
+}
+
+// ═══ BOOT ═════════════════════════════════════════════════════
+async function boot() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const c = col(CU, _members);
+  document.getElementById('hav').style.background = c;
+  document.getElementById('hav').textContent = ini(CU);
+  document.getElementById('hname').textContent = CU;
+  document.getElementById('fm').value = CU;
+  document.getElementById('fd').value = new Date().toISOString().split('T')[0];
+  document.getElementById('tab-admin').style.display = IS_ADMIN ? 'block' : 'none';
+  document.getElementById('adm-chip-hdr').style.display = IS_ADMIN ? 'inline' : 'none';
+  const ms = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('pmonth').textContent = ms[new Date().getMonth()] + ' ' + new Date().getFullYear();
+  try {
+    [_books, _poll, _recs, _comments] = await Promise.all([
+      spGet('Books'),
+      spGet('Poll'),
+      spGet('Recommendations'),
+      spGet('Comments')
+    ]);
+  } catch(e) { toast('⚠️ Some data failed to load: ' + e.message); }
+  rDash(); rLB(); rFeed(); rPoll(); rRec();
+  if (IS_ADMIN) rAdmin();
+}
+
+function go(v) {
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(x => x.classList.remove('on'));
+  document.getElementById('view-' + v).classList.add('on');
+  document.getElementById('tab-' + v).classList.add('on');
+  if (v==='leaderboard') rLB();
+  if (v==='feed') rFeed();
+  if (v==='poll') rPoll();
+  if (v==='recommend') rRec();
+  if (v==='admin' && IS_ADMIN) rAdmin();
+}
+
+// ═══ DASHBOARD ════════════════════════════════════════════════
+function rDash() {
+  const mb = _books.filter(b => b.Title === CU), cnt = mb.length;
+  const pct = Math.min(cnt/20, 1);
+  document.getElementById('dring').style.strokeDashoffset = 219.9*(1-pct);
+  document.getElementById('dcnt').textContent = cnt;
+  document.getElementById('dbar').style.width = (pct*100) + '%';
+  document.getElementById('dgreet').textContent = 'Welcome back, ' + CU.split(' ')[0] + '! 👋' + (IS_ADMIN?' 🔐':'');
+  const msgs = ['Start your first book! 🚀','Great start! 📖','Building momentum! 🔥','Halfway there! ⭐','Almost there! 💪','BOOKATHON CHAMPION! 🏆'];
+  document.getElementById('dmsg').textContent = cnt===0?msgs[0]:cnt<5?msgs[1]:cnt<10?msgs[2]:cnt<15?msgs[3]:cnt<20?msgs[4]:msgs[5];
+  document.getElementById('sread').textContent = cnt;
+  document.getElementById('sleft').textContent = Math.max(0, 20-cnt);
+  const rs = mb.filter(b=>b.Rating).map(b=>+b.Rating);
+  document.getElementById('savg').textContent = rs.length ? (rs.reduce((a,b)=>a+b,0)/rs.length).toFixed(1) : '—';
+  document.getElementById('sgen').textContent = new Set(mb.map(b=>b.Genre).filter(Boolean)).size;
+  document.getElementById('dcount-tag').textContent = cnt + ' of 20 books';
+  const next = BADGES.find(b => cnt < b.req);
+  document.getElementById('dnext').innerHTML = next
+    ? `<div style="font-size:12px;color:var(--muted);">Next badge: <strong style="color:var(--p1)">${next.icon} ${next.label}</strong> at ${next.req} books <span style="color:var(--acc);font-weight:700;">(${next.req-cnt} to go)</span></div>`
+    : `<div style="font-size:12px;color:#10b981;font-weight:700;">🎉 All badges earned!</div>`;
+  document.getElementById('dbadges').innerHTML = BADGES.map(b =>
+    `<div class="bdg ${cnt>=b.req?'got':'no'}">${b.icon} ${b.label}${cnt<b.req?` <span style="font-size:9px;opacity:.6">${cnt}/${b.req}</span>`:' ✓'}</div>`
+  ).join('');
+  const el = document.getElementById('mybooks');
+  if (!mb.length) { el.innerHTML='<div class="empty"><div class="ei">📭</div><h3>No books logged yet</h3><p>Log your first book to begin!</p></div>'; return; }
+  el.innerHTML = [...mb].reverse().map((b,i) => `
+    <div class="be">
+      <div class="be-num">${mb.length-i}</div>
+      <div class="be-body">
+        <div class="be-title">${b.BookTitle||b.Title}<span class="gtag">${b.Genre||''}</span></div>
+        <div class="be-meta">by ${b.Author||'?'} · ${b.DateFinished||'?'} &nbsp;<span class="stars">${'★'.repeat(+b.Rating||0)}${'☆'.repeat(5-(+b.Rating||0))}</span></div>
+        ${b.Summary?`<div class="be-note">${b.Summary.slice(0,130)}${b.Summary.length>130?'...':''}</div>`:''}
+        ${b.Takeaway?`<div class="be-tk">💡 ${b.Takeaway}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+// ═══ LOG BOOK ═════════════════════════════════════════════════
+async function logBook(e) {
+  e.preventDefault();
+  if (!PR) { toast('Please pick a rating ★'); return; }
+  const btn = document.getElementById('log-btn');
+  btn.disabled = true; btn.textContent = '⏳ Saving...';
+  try {
+    const item = {
+      Title: CU,
+      BookTitle: document.getElementById('ft').value.trim(),
+      Author: document.getElementById('fa').value.trim(),
+      Genre: document.getElementById('fg2').value,
+      Rating: String(PR),
+      Summary: document.getElementById('fs').value.trim(),
+      Takeaway: document.getElementById('ftk').value.trim(),
+      DateFinished: document.getElementById('fd').value,
+      LoggedAt: new Date().toISOString(),
+      KudosData: '{}',
+      MemberEmail: ''
+    };
+    await spPost('Books', item);
+    _books = await spGet('Books');
+    document.getElementById('bform').reset();
+    document.getElementById('fm').value = CU;
+    document.getElementById('fd').value = new Date().toISOString().split('T')[0];
+    document.querySelectorAll('#spick span').forEach(s => s.classList.remove('on')); PR = 0;
+    const mc = _books.filter(b=>b.Title===CU).length;
+    const nb = BADGES.find(b=>b.req===mc);
+    if (nb) toast('🎉 Badge unlocked: ' + nb.icon + ' ' + nb.label + '!');
+    else toast('✅ "' + item.BookTitle + '" logged! ' + mc + '/20 done.');
+    rDash(); go('dashboard');
+  } catch(err) { toast('❌ Could not save: ' + err.message); }
+  finally { btn.disabled = false; btn.textContent = '📚 Log This Book →'; }
+}
+
+// ═══ LEADERBOARD ══════════════════════════════════════════════
+function rLB() {
+  const el = document.getElementById('lbList');
+  const ranked = _members.map(m => ({
+    ...m, cnt: _books.filter(b=>b.Title===m.MemberName).length,
+    mb: _books.filter(b=>b.Title===m.MemberName)
+  })).sort((a,b) => b.cnt-a.cnt);
+  if (!ranked.length) { el.innerHTML='<div class="empty"><div class="ei">🏆</div><h3>No members yet</h3></div>'; return; }
+  el.innerHTML = ranked.map((m,i) => {
+    const ic = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const champ = m.cnt>=20, me = m.MemberName===CU;
+    const avgR = m.mb.length ? (m.mb.reduce((s,b)=>s+(+b.Rating||0),0)/m.mb.length).toFixed(1) : '—';
+    const bookRows = m.mb.length ? m.mb.map((b,bi) => `
+      <div class="lb-book">
+        <div class="lb-bidx">${bi+1}</div>
+        <div class="lb-btxt">
+          <div class="lb-btitle">${b.BookTitle||'?'}</div>
+          <div class="lb-bsub">by ${b.Author||'?'} · ${b.DateFinished||'?'}</div>
+        </div>
+        <span class="lb-bgenre">${b.Genre||''}</span>
+        <span style="color:var(--acc);font-size:10px;">${'★'.repeat(+b.Rating||0)}</span>
+      </div>`).join('')
+      : '<div style="font-size:12px;color:var(--muted);font-style:italic;padding:4px;">No books logged yet.</div>';
+    return `
+    <div class="lbrow ${champ?'champ':''} ${me?'me':''}">
+      <div class="lb-top" onclick="toggleLB(${i})">
+        <div style="font-size:15px;font-weight:900;width:24px;text-align:center;color:${champ?'rgba(255,255,255,.6)':'var(--muted)'};">${ic}</div>
+        <div class="lbav" style="background:${C[m.ColorIndex%C.length]}">${ini(m.MemberName)}</div>
+        <div class="lbinfo">
+          <div class="lbn">${m.MemberName}${me?'<span class="metag">YOU</span>':''}${champ?'<span style="font-size:10px;background:#f59e0b;color:#fff;border-radius:4px;padding:1px 6px;margin-left:4px;">🏆 CHAMPION</span>':''}</div>
+          <div class="lbs">${m.cnt}/20 books · avg ${avgR}★</div>
+        </div>
+        <div class="lbprog"><div class="bw"><div class="bf" style="width:${Math.min(m.cnt/20,1)*100}%;background:${champ?'linear-gradient(90deg,#f59e0b,#fbbf24)':'linear-gradient(90deg,'+C[m.ColorIndex%C.length]+','+C[(m.ColorIndex+1)%C.length]+')'}"></div></div></div>
+        <div class="lbc">${m.cnt}/20</div>
+        <div class="lb-chev" id="chev-${i}">▼</div>
+      </div>
+      <div class="lb-panel" id="panel-${i}">
+        <div class="lb-panel-title">📚 ${m.MemberName.split(' ')[0]}'s Reading List</div>
+        ${bookRows}
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleLB(i) {
+  document.getElementById('panel-'+i).classList.toggle('open');
+  document.getElementById('chev-'+i).classList.toggle('open');
+}
+
+// ═══ FEED ═════════════════════════════════════════════════════
+function rFeed() {
+  const el = document.getElementById('feedList');
+  if (!_books.length) { el.innerHTML='<div class="empty"><div class="ei">👥</div><h3>No activity yet</h3><p>Log a book to kick off the team feed!</p></div>'; return; }
+  const sorted = [..._books].sort((a,b) => new Date(b.LoggedAt||0)-new Date(a.LoggedAt||0));
+  el.innerHTML = sorted.map(b => {
+    const c = col(b.Title, _members);
+    let kudos = {};
+    try { kudos = JSON.parse(b.KudosData||'{}'); } catch(e){}
+    return `<div class="fi">
+      <div class="fih">
+        <div class="fiav" style="background:${c}">${ini(b.Title)}</div>
+        <div style="flex:1;">
+          <div class="fin">${b.Title} <span style="font-weight:400;color:var(--muted);">finished a book</span>${b.Title===CU?' <span class="metag">YOU</span>':''}</div>
+          <div class="fit">${b.DateFinished||'?'}</div>
+        </div>
+        <div class="stars">${'★'.repeat(+b.Rating||0)}</div>
+      </div>
+      <div class="fibook">
+        <div class="fibt">📖 ${b.BookTitle||'?'}</div>
+        <div class="fibm">by ${b.Author||'?'} &nbsp;<span class="gtag">${b.Genre||''}</span></div>
+      </div>
+      ${b.Summary?`<div class="fiins">${b.Summary.slice(0,180)}${b.Summary.length>180?'...':''}</div>`:''}
+      ${b.Takeaway?`<div style="font-size:11px;color:var(--acc);font-weight:700;margin-bottom:8px;">💡 ${b.Takeaway}</div>`:''}
+      <div class="krow">
+        ${KUDOS.map(k => {
+          const arr = kudos[k.l]||[], cnt = arr.length, gave = arr.includes(CU);
+          return `<button class="kbtn ${gave?'on':''}" onclick="giveKudos(${b.Id},'${k.l}')">
+            ${k.e} ${k.l}${cnt>0?` <span class="kcnt">${cnt}</span>`:''}
+          </button>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function giveKudos(id, type) {
+  const book = _books.find(b=>b.Id===id); if (!book) return;
+  let kudos = {};
+  try { kudos = JSON.parse(book.KudosData||'{}'); } catch(e){}
+  if (!kudos[type]) kudos[type] = [];
+  const idx = kudos[type].indexOf(CU);
+  if (idx>-1) kudos[type].splice(idx,1); else kudos[type].push(CU);
+  try {
+    await spPatch('Books', id, { KudosData: JSON.stringify(kudos) });
+    book.KudosData = JSON.stringify(kudos);
+    rFeed();
+  } catch(e) { toast('❌ Could not save kudos: ' + e.message); }
+}
+
+// ═══ POLL ═════════════════════════════════════════════════════
+function rPoll() {
+  document.getElementById('poll-admin-form').style.display = IS_ADMIN ? 'block' : 'none';
+  document.getElementById('poll-nonadmin-msg').style.display = IS_ADMIN ? 'none' : 'block';
+  const el = document.getElementById('plist');
+  if (!_poll.length) { el.innerHTML='<div class="empty" style="padding:16px;"><div class="ei">🗳️</div><h3>No nominations yet</h3><p>Ask the Admin to add some books!</p></div>'; return; }
+  const total = _poll.reduce((s,p) => { try { return s+(JSON.parse(p.Votes||'[]').length); } catch(e){return s;} }, 0);
+  el.innerHTML = _poll.map(p => {
+    let votes = []; try { votes = JSON.parse(p.Votes||'[]'); } catch(e){}
+    const cnt = votes.length, pct = total>0 ? Math.round(cnt/total*100) : 0, voted = votes.includes(CU);
+    return `<div class="prow">
+      <div class="pinfo"><div class="pt">${p.BookTitle||p.Title}</div><div class="pa">by ${p.Author||'?'} · ${p.NominatedBy||'?'}</div></div>
+      <div class="pbar"><div class="pbw"><div class="pbf" style="width:${pct}%"></div></div><div style="font-size:10px;color:var(--muted);margin-top:2px;">${pct}%</div></div>
+      <div class="pvc">${cnt}v</div>
+      <button class="vbtn ${voted?'v':''}" onclick="castVote(${p.Id})">${voted?'✓':'Vote'}</button>
+    </div>`;
+  }).join('');
+}
+
+async function nominate(e) {
+  e.preventDefault();
+  if (!IS_ADMIN) { toast('Admin only'); return; }
+  const t = document.getElementById('pt').value.trim(), a = document.getElementById('pa').value.trim();
+  const ms = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const month = ms[new Date().getMonth()] + ' ' + new Date().getFullYear();
+  try {
+    await spPost('Poll', { Title: t, BookTitle: t, Author: a, NominatedBy: CU, Votes: '[]', PollMonth: month });
+    _poll = await spGet('Poll');
+    document.getElementById('pt').value=''; document.getElementById('pa').value='';
+    toast('📚 "' + t + '" nominated!'); rPoll();
+  } catch(err) { toast('❌ Could not nominate: ' + err.message); }
+}
+
+async function castVote(id) {
+  // Remove vote from all other items first
+  for (const p of _poll) {
+    let votes = []; try { votes = JSON.parse(p.Votes||'[]'); } catch(e){}
+    if (votes.includes(CU)) {
+      votes = votes.filter(v=>v!==CU);
+      try { await spPatch('Poll', p.Id, { Votes: JSON.stringify(votes) }); p.Votes = JSON.stringify(votes); } catch(e){}
+    }
+  }
+  const p = _poll.find(x=>x.Id===id); if (!p) return;
+  let votes = []; try { votes = JSON.parse(p.Votes||'[]'); } catch(e){}
+  votes.push(CU);
+  try {
+    await spPatch('Poll', id, { Votes: JSON.stringify(votes) });
+    p.Votes = JSON.stringify(votes);
+    toast('🗳️ Vote cast!'); rPoll();
+  } catch(e) { toast('❌ Could not vote: ' + e.message); }
+}
+
+// ═══ RECOMMENDATIONS ══════════════════════════════════════════
+function openRecForm() {
+  const fc = document.getElementById('rec-form-card');
+  fc.style.display = 'block';
+  fc.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function closeRecForm() { document.getElementById('rec-form-card').style.display = 'none'; }
+function toggleBF(el) { el.classList.toggle('on'); }
+
+async function submitRec() {
+  const title = document.getElementById('rec-title').value.trim();
+  const author = document.getElementById('rec-author').value.trim();
+  const why = document.getElementById('rec-why').value.trim();
+  const who = document.getElementById('rec-who').value.trim();
+  const insight = document.getElementById('rec-insight').value.trim();
+  if (!title||!author||!why||!who||!insight) { toast('Please fill in all required fields'); return; }
+  const bestFor = [...document.querySelectorAll('.bf-chip.on')].map(c=>c.textContent.trim()).join(', ');
+  const btn = document.getElementById('rec-submit-btn');
+  btn.disabled=true; btn.textContent='⏳ Saving...';
+  try {
+    await spPost('Recommendations', {
+      Title: title, BookTitle: title, Author: author,
+      Genre: document.getElementById('rec-genre').value,
+      WhyRecommend: why, WhyShouldRead: who, KeyInsight: insight,
+      Difficulty: document.getElementById('rec-diff').value,
+      BestFor: bestFor, RecommendedBy: CU, RecommenderEmail: '',
+      HelpfulVotes: '[]', IsFeatured: false,
+      AddedAt: new Date().toISOString()
+    });
+    _recs = await spGet('Recommendations');
+    toast('📚 "' + title + '" recommended!');
+    closeRecForm();
+    // Reset form
+    ['rec-title','rec-author','rec-why','rec-who','rec-insight'].forEach(id=>document.getElementById(id).value='');
+    document.querySelectorAll('.bf-chip.on').forEach(c=>c.classList.remove('on'));
+    rRec();
+  } catch(err) { toast('❌ Could not save: ' + err.message); }
+  finally { btn.disabled=false; btn.textContent='📚 Submit Recommendation'; }
+}
+
+function filterRec(f, btn) {
+  REC_FILTER = f;
+  document.querySelectorAll('.rec-filter').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); rRec();
+}
+
+function rRec() {
+  const el = document.getElementById('rec-grid');
+  let filtered = [..._recs].reverse();
+  if (REC_FILTER==='featured') filtered = filtered.filter(r=>r.IsFeatured);
+  else if (REC_FILTER!=='all') filtered = filtered.filter(r=>r.Genre===REC_FILTER);
+  if (!filtered.length) {
+    el.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--muted);">
+      <div style="font-size:40px;margin-bottom:10px;">📭</div>
+      <h3 style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;">No recommendations yet</h3>
+      <p style="font-size:13px;margin-bottom:14px;">Be the first to recommend a book!</p>
+      <button onclick="openRecForm()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:10px 20px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;">+ Recommend a Book</button>
+    </div>`; return;
+  }
+  el.innerHTML = filtered.map(r => {
+    const c = col(r.RecommendedBy, _members);
+    let helpful=[]; try{helpful=JSON.parse(r.HelpfulVotes||'[]');}catch(e){}
+    const hasHelped = helpful.includes(CU);
+    const cmts = _comments.filter(c=>c.ParentID===r.Id&&c.ParentType==='Rec');
+    return `<div class="rcard ${r.IsFeatured?'featured':''}">
+      ${r.IsFeatured?'<div class="featured-badge">⭐ Featured</div>':''}
+      <div class="rec-by">
+        <div class="rec-by-av" style="background:${c}">${ini(r.RecommendedBy||'?')}</div>
+        <span style="font-size:10px;color:var(--muted);">${(r.RecommendedBy||'?').split(' ')[0]}</span>
+      </div>
+      <div style="padding-right:60px;">
+        <div class="rcard-title">${r.BookTitle||r.Title}</div>
+        <div class="rcard-author">by ${r.Author||'?'} ${r.Genre?`<span class="gtag">${r.Genre}</span>`:''}</div>
+      </div>
+      <div class="rcard-why"><strong>Why:</strong> "${r.WhyRecommend||''}"</div>
+      <div class="rcard-insight"><strong>💡 Key Insight:</strong> ${r.KeyInsight||''}</div>
+      ${r.WhyShouldRead?`<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">👥 <strong>Best for:</strong> ${r.WhyShouldRead}</div>`:''}
+      ${r.BestFor?`<div style="font-size:11px;color:var(--muted);margin-bottom:8px;">${r.BestFor}</div>`:''}
+      <div class="rcard-actions">
+        <button class="ract-btn ${hasHelped?'active':''}" onclick="toggleHelpful(${r.Id})">
+          👍 Helpful${helpful.length>0?' ('+helpful.length+')':''}
+        </button>
+        ${IS_ADMIN?`<button class="ract-btn" onclick="toggleFeatured(${r.Id})" style="color:${r.IsFeatured?'#f59e0b':'var(--muted)'};">${r.IsFeatured?'★ Unfeature':'☆ Feature'}</button>`:''}
+        ${IS_ADMIN||r.RecommendedBy===CU?`<button class="ract-btn" onclick="deleteRec(${r.Id})" style="color:#ef4444;border-color:transparent;">🗑️</button>`:''}
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;cursor:pointer;" onclick="toggleRecComments(${r.Id})">
+          💬 ${cmts.length} comment${cmts.length!==1?'s':''} <span id="chev-rec-${r.Id}" style="transition:transform .2s;display:inline-block;">▼</span>
+        </div>
+        <div id="cmt-panel-${r.Id}" style="display:none;">
+          ${cmts.map(c=>`
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <div style="width:24px;height:24px;border-radius:50%;background:${col(c.CommentBy,_members)};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;">${ini(c.CommentBy||'?')}</div>
+              <div style="flex:1;background:var(--bg);border-radius:8px;padding:7px 10px;">
+                <div style="font-size:11px;font-weight:700;color:var(--text);">${c.CommentBy}</div>
+                <div style="font-size:12px;color:#374151;margin-top:2px;">${c.CommentText}</div>
+              </div>
+            </div>`).join('')}
+          <div class="rc-input-row">
+            <input type="text" id="cmt-${r.Id}" placeholder="Add a comment..." onkeydown="if(event.key==='Enter')addComment(${r.Id},'Rec')"/>
+            <button class="rc-send" onclick="addComment(${r.Id},'Rec')">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRecComments(id) {
+  const p = document.getElementById('cmt-panel-'+id);
+  const ch = document.getElementById('chev-rec-'+id);
+  const open = p.style.display==='none';
+  p.style.display = open?'block':'none';
+  if(ch) ch.style.transform = open?'rotate(180deg)':'rotate(0deg)';
+}
+
+async function addComment(parentId, parentType) {
+  const inp = document.getElementById('cmt-'+parentId);
+  const text = (inp?.value||'').trim(); if (!text) return;
+  try {
+    await spPost('Comments', {
+      Title: text.slice(0,50), ParentID: parentId, ParentType: parentType,
+      CommentText: text, CommentBy: CU, CommentByEmail: '',
+      CommentAt: new Date().toISOString()
+    });
+    _comments = await spGet('Comments');
+    inp.value=''; rRec();
+    setTimeout(()=>{ const p=document.getElementById('cmt-panel-'+parentId); if(p) p.style.display='block'; },50);
+  } catch(e) { toast('❌ Could not post comment: ' + e.message); }
+}
+
+async function toggleHelpful(id) {
+  const r = _recs.find(x=>x.Id===id); if (!r) return;
+  let helpful=[]; try{helpful=JSON.parse(r.HelpfulVotes||'[]');}catch(e){}
+  const idx = helpful.indexOf(CU);
+  if(idx>-1) helpful.splice(idx,1); else helpful.push(CU);
+  try {
+    await spPatch('Recommendations', id, { HelpfulVotes: JSON.stringify(helpful) });
+    r.HelpfulVotes = JSON.stringify(helpful); rRec();
+  } catch(e) { toast('❌ Error: ' + e.message); }
+}
+
+async function toggleFeatured(id) {
+  if (!IS_ADMIN) return;
+  const r = _recs.find(x=>x.Id===id); if (!r) return;
+  const newVal = !r.IsFeatured;
+  try {
+    await spPatch('Recommendations', id, { IsFeatured: newVal });
+    r.IsFeatured = newVal;
+    toast(newVal?'⭐ Marked as Featured!':'Removed from Featured'); rRec();
+  } catch(e) { toast('❌ Error: ' + e.message); }
+}
+
+async function deleteRec(id) {
+  const r = _recs.find(x=>x.Id===id);
+  if (!IS_ADMIN && r?.RecommendedBy!==CU) { toast('Not allowed'); return; }
+  if (!confirm('Remove this recommendation?')) return;
+  try {
+    await spDelete('Recommendations', id);
+    _recs = _recs.filter(x=>x.Id!==id);
+    toast('🗑️ Removed.'); rRec();
+  } catch(e) { toast('❌ Error: ' + e.message); }
+}
+
+// ═══ ADMIN ════════════════════════════════════════════════════
+function rAdmin() {
+  if (!IS_ADMIN) return;
+  const total = _books.length;
+  const avgR = total ? (_books.reduce((s,b)=>s+(+b.Rating||0),0)/total).toFixed(1) : '—';
+  const champions = _members.filter(m=>_books.filter(b=>b.Title===m.MemberName).length>=20).length;
+  const topM = _members.map(m=>({n:m.MemberName,c:_books.filter(b=>b.Title===m.MemberName).length})).sort((a,b)=>b.c-a.c)[0];
+  document.getElementById('adm-stats-row').innerHTML = `
+    <div class="adm-stat"><div class="n">${_members.length}</div><div class="l">Members</div></div>
+    <div class="adm-stat"><div class="n">${total}</div><div class="l">Total Books</div></div>
+    <div class="adm-stat"><div class="n">${avgR}</div><div class="l">Avg Rating</div></div>
+    <div class="adm-stat"><div class="n">${champions}</div><div class="l">Champions</div></div>
+    ${topM?`<div class="adm-stat"><div class="n">${topM.c}</div><div class="l">${topM.n.split(' ')[0]} leads</div></div>`:''}`;
+  const ranked = _members.map(m=>({...m,mb:_books.filter(b=>b.Title===m.MemberName)})).sort((a,b)=>b.mb.length-a.mb.length);
+  document.getElementById('adm-members-list').innerHTML = ranked.map(m=>`
+    <div style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,var(--p1),var(--p2));border-radius:10px;margin-bottom:8px;color:#fff;">
+        <div class="av" style="background:${C[m.ColorIndex%C.length]};width:32px;height:32px;font-size:12px;">${ini(m.MemberName)}</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;">${m.MemberName}</div>
+          <div style="font-size:11px;opacity:.7;">${m.mb.length}/20 books</div>
+        </div>
+      </div>
+      ${m.mb.length?`
+      <div style="overflow-x:auto;">
+        <table class="adm-table"><thead><tr><th>#</th><th>Title</th><th>Author</th><th>Genre</th><th>Rating</th><th>Date</th><th></th></tr></thead>
+        <tbody>${m.mb.map((b,i)=>`<tr>
+          <td>${i+1}</td><td><strong>${b.BookTitle||'?'}</strong></td><td>${b.Author||'?'}</td>
+          <td><span class="gtag">${b.Genre||''}</span></td>
+          <td style="color:#f59e0b;">${'★'.repeat(+b.Rating||0)}</td>
+          <td>${b.DateFinished||'?'}</td>
+          <td><button class="del-btn" onclick="adminDelete(${b.Id})">🗑️</button></td>
+        </tr>`).join('')}</tbody></table>
+      </div>`:'<p style="font-size:12px;color:var(--muted);padding:8px 0;">No books logged yet.</p>'}
+    </div>`).join('');
+  document.getElementById('adm-poll').innerHTML = _poll.length
+    ? `<table class="adm-table"><thead><tr><th>#</th><th>Book</th><th>Author</th><th>By</th><th>Votes</th></tr></thead>
+      <tbody>${_poll.map((p,i)=>{let v=[];try{v=JSON.parse(p.Votes||'[]');}catch(e){}return`<tr><td>${i+1}</td><td><strong>${p.BookTitle||p.Title}</strong></td><td>${p.Author||'?'}</td><td>${p.NominatedBy||'?'}</td><td>${v.length}</td></tr>`;}).join('')}</tbody></table>`
+    : '<p style="font-size:12px;color:var(--muted);">No nominations yet.</p>';
+}
+
+async function adminDelete(id) {
+  if (!IS_ADMIN) { toast('Admin only'); return; }
+  if (!confirm('Delete this book entry?')) return;
+  try {
+    await spDelete('Books', id);
+    _books = _books.filter(b=>b.Id!==id);
+    toast('🗑️ Entry deleted.'); rAdmin(); rLB(); rDash();
+  } catch(e) { toast('❌ Error: ' + e.message); }
+}
+
+async function resetPoll() {
+  if (!IS_ADMIN) { toast('Admin only'); return; }
+  if (!confirm('Delete ALL poll nominations and votes?')) return;
+  try {
+    for (const p of _poll) await spDelete('Poll', p.Id);
+    _poll = [];
+    toast('🗳️ Poll reset.'); rAdmin(); rPoll();
+  } catch(e) { toast('❌ Error: ' + e.message); }
+}
+
+function exportTeamCSV() {
+  if (!_books.length) { toast('No data to export yet.'); return; }
+  const headers = ['Member','Book Title','Author','Genre','Rating','Date Finished','Summary','Key Takeaway'];
+  const rows = _books.map(b=>[
+    b.Title, `"${(b.BookTitle||'').replace(/"/g,'""')}"`,
+    `"${(b.Author||'').replace(/"/g,'""')}"`,
+    b.Genre||'', b.Rating||'', b.DateFinished||'',
+    `"${(b.Summary||'').replace(/"/g,'""').replace(/\n/g,' ')}"`,
+    `"${(b.Takeaway||'').replace(/"/g,'""')}"`
+  ]);
+  const csv = [headers,...rows].map(r=>r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = '2026-bookathon-team-data.csv'; a.click();
+  toast('📊 Team CSV exported!');
+}
+
+// ═══ INIT ═════════════════════════════════════════════════════
+(async () => {
+  await loadMembers();
+  // Reload books for member count display
+  try { _books = await spGet('Books'); renderLogin(); } catch(e){}
+  // Auto-login from session
+  const savedUser = sessionStorage.getItem('bk_user');
+  const savedAdmin = sessionStorage.getItem('bk_admin');
+  if (savedUser && _members.find(m=>m.MemberName===savedUser)) {
+    CU = savedUser; IS_ADMIN = savedAdmin==='1';
+    await boot();
+  }
+})();
+</script>
+</body>
+</html>
