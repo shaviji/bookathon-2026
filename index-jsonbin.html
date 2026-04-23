@@ -696,7 +696,8 @@ function rFeed() {
         <div class="fibt">📖 ${b.title}</div>
         <div class="fibm">by ${b.author||'?'} &nbsp;<span class="gtag">${b.genre||''}</span></div>
       </div>
-      ${b.summary?`<div class="fiins">${b.summary.slice(0,180)}${b.summary.length>180?'...':''}</div>`:''}
+      ${b.summary?`<div class="fiins" id="sum-${b.id}">${b.summary.length>180?b.summary.slice(0,180)+'...':b.summary}</div>
+      ${b.summary.length>180?`<button onclick="toggleSum(${b.id})" id="sumBtn-${b.id}" style="background:none;border:none;color:var(--p1);font-size:11px;font-weight:700;cursor:pointer;margin-bottom:6px;padding:0;">Read more ▼</button>`:''}`:''}
       ${b.takeaway?`<div style="font-size:11px;color:var(--acc);font-weight:700;margin-bottom:8px;">💡 ${b.takeaway}</div>`:''}
       <div class="krow">
         ${KUDOS.map(k=>{
@@ -708,6 +709,16 @@ function rFeed() {
       </div>
     </div>`;
   }).join('');
+}
+
+function toggleSum(id) {
+  const book = _books.find(b=>b.id===id); if(!book) return;
+  const el = document.getElementById('sum-'+id);
+  const btn = document.getElementById('sumBtn-'+id);
+  if (!el || !btn) return;
+  const isShort = el.textContent.endsWith('...');
+  el.textContent = isShort ? book.summary : book.summary.slice(0,180)+'...';
+  btn.textContent = isShort ? 'Read less ▲' : 'Read more ▼';
 }
 
 async function giveKudos(id,type) {
