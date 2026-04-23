@@ -487,8 +487,8 @@ async function li(n) {
     if (pin!==null&&pin!==''&&!IS_ADMIN) toast('❌ Wrong PIN — logged in as regular user');
   } else { IS_ADMIN=false; }
   CU=n;
-  sessionStorage.setItem('bk_user',n);
-  sessionStorage.setItem('bk_admin',IS_ADMIN?'1':'0');
+  localStorage.setItem('bk_user',n);
+  localStorage.setItem('bk_admin',IS_ADMIN?'1':'0');
   await boot();
 }
 
@@ -506,8 +506,8 @@ async function join() {
 
 function logout() {
   CU=null; IS_ADMIN=false;
-  sessionStorage.removeItem('bk_user');
-  sessionStorage.removeItem('bk_admin');
+  localStorage.removeItem('bk_user');
+  localStorage.removeItem('bk_admin');
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   renderLogin();
@@ -972,8 +972,8 @@ function exportTeamCSV(){
 // ═══ INIT ═════════════════════════════════════════════════════
 (async()=>{
   await loadMembers();
-  const savedUser=sessionStorage.getItem('bk_user');
-  const savedAdmin=sessionStorage.getItem('bk_admin');
+  const savedUser=localStorage.getItem('bk_user');
+  const savedAdmin=localStorage.getItem('bk_admin');
   if (savedUser&&_members.find(m=>m.name===savedUser)){
     CU=savedUser; IS_ADMIN=savedAdmin==='1';
     await boot();
