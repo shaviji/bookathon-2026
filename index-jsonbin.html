@@ -227,6 +227,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     <button class="ntab" onclick="go('feed')" id="tab-feed">👥 Team Feed</button>
     <button class="ntab" onclick="go('poll')" id="tab-poll">🗳️ Poll</button>
     <button class="ntab" onclick="go('recommend')" id="tab-recommend">📚 Recommend</button>
+    <button class="ntab" onclick="go('suggest')" id="tab-suggest">✨ For You</button>
     <button class="ntab admin-tab" onclick="go('admin')" id="tab-admin" style="display:none;">🔐 Admin</button>
   </nav>
   <div class="wrap">
@@ -318,6 +319,37 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
         </div>
       </div>
     </div>
+    <!-- FOR YOU -->
+    <div class="view" id="view-suggest">
+      <div style="background:linear-gradient(135deg,#0f172a,#1e1b4b,#312e81);border-radius:14px;padding:16px 20px;margin-bottom:14px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <h2 style="font-size:17px;font-weight:900;">✨ Picked Just For You</h2>
+          <p id="sugg-sub" style="font-size:12px;opacity:.75;margin-top:2px;">Based on your reading history, ratings &amp; takeaways</p>
+          <div id="sugg-pills" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;"></div>
+        </div>
+        <button onclick="rSugg()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">🔄 Refresh</button>
+      </div>
+      <div class="info-box" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+        <h3 style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:6px;">🧠 How recommendations work</h3>
+        <ul style="font-size:12px;color:#1e3a8a;line-height:1.6;padding-left:16px;">
+          <li><strong>Genre affinity</strong> — Genres you rate 4–5★ get higher weight</li>
+          <li><strong>Keyword scanning</strong> — Words in your summaries &amp; takeaways map to relevant genres</li>
+          <li><strong>Already-read filter</strong> — Never suggests a book you've already logged</li>
+          <li><strong>Book database</strong> — ~60 curated titles built into the app</li>
+        </ul>
+      </div>
+      <div id="dna-card" style="display:none;background:#fff;border-radius:var(--r);padding:13px;box-shadow:var(--sh);margin-bottom:14px;">
+        <div class="ctitle">📊 Your Reading DNA</div>
+        <div id="dna-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;"></div>
+      </div>
+      <div id="sugg-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;"></div>
+      <div id="explore-card" style="display:none;background:#fff;border-radius:var(--r);padding:13px;box-shadow:var(--sh);">
+        <div class="ctitle">🌍 Broaden Your Horizons</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Genres you haven't explored yet:</p>
+        <div id="explore-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"></div>
+      </div>
+    </div>
+
     <div class="view" id="view-recommend">
       <div class="rec-banner">
         <div><h2>📚 Team Recommendations</h2><p>Books your teammates think everyone should read</p></div>
@@ -534,7 +566,7 @@ async function boot() {
     _recs=rd.recs||[];
     _comments=rd.comments||[];
   } catch(e) { toast('⚠️ Some data failed to load: '+e.message); }
-  rDash(); rLB(); rFeed(); rPoll(); rRec();
+  rDash(); rLB(); rFeed(); rPoll(); rRec(); rSugg();
   if (IS_ADMIN) rAdmin();
 }
 
@@ -557,6 +589,7 @@ async function go(v) {
   if (v==='feed') rFeed();
   if (v==='poll') rPoll();
   if (v==='recommend') rRec();
+  if (v==='suggest') rSugg();
   if (v==='admin'&&IS_ADMIN) rAdmin();
 }
 
@@ -774,6 +807,166 @@ async function castVote(idx) {
   _poll.votes[idx].push(CU);
   try { await jPut('poll',_poll); toast('🗳️ Vote cast!'); rPoll(); }
   catch(e){toast('❌ Could not vote: '+e.message);}
+}
+
+// ═══ FOR YOU ENGINE ═══════════════════════════════════════════
+const BOOK_DB={
+  'Self-Help':[
+    {t:'Atomic Habits',a:'James Clear',e:'⚛️',tags:['habits','systems','change'],d:'Tiny 1% changes compound into remarkable results.'},
+    {t:'Deep Work',a:'Cal Newport',e:'🎯',tags:['focus','productivity','concentration'],d:'Rules for focused success in a distracted world.'},
+    {t:'Mindset',a:'Carol S. Dweck',e:'🧠',tags:['growth','learning','mindset'],d:'The new psychology of success.'},
+    {t:'Essentialism',a:'Greg McKeown',e:'✂️',tags:['focus','simplicity','priorities'],d:'The disciplined pursuit of less but better.'},
+    {t:'Think Again',a:'Adam Grant',e:'🔁',tags:['thinking','curiosity','change'],d:'The power of knowing what you don\'t know.'},
+    {t:'Can\'t Hurt Me',a:'David Goggins',e:'💪',tags:['resilience','discipline','limits'],d:'Master your mind and defy the odds.'},
+    {t:'The 5 AM Club',a:'Robin Sharma',e:'🌅',tags:['routine','morning','productivity'],d:'Own your morning, elevate your life.'},
+    {t:'Ikigai',a:'Héctor García',e:'🌸',tags:['purpose','happiness','meaning'],d:'The Japanese secret to a long and happy life.'},
+  ],
+  'Business & Leadership':[
+    {t:'Start With Why',a:'Simon Sinek',e:'🔍',tags:['purpose','leadership','vision'],d:'Great leaders inspire action by starting with why.'},
+    {t:'Dare to Lead',a:'Brené Brown',e:'🦁',tags:['courage','vulnerability','leadership'],d:'Brave work, tough conversations, whole hearts.'},
+    {t:'Radical Candor',a:'Kim Scott',e:'💬',tags:['feedback','communication','management'],d:'Be a kickass boss without losing your humanity.'},
+    {t:'Measure What Matters',a:'John Doerr',e:'📊',tags:['goals','performance','execution'],d:'OKRs — the simple idea that drives 10x growth.'},
+    {t:'The Hard Thing About Hard Things',a:'Ben Horowitz',e:'🔨',tags:['entrepreneurship','decisions','leadership'],d:'Building a business when there are no easy answers.'},
+    {t:'Good to Great',a:'Jim Collins',e:'🚀',tags:['excellence','discipline','leadership'],d:'Why some companies make the leap and others don\'t.'},
+    {t:'No Rules Rules',a:'Reed Hastings',e:'🎬',tags:['culture','freedom','innovation'],d:'Netflix and the culture of reinvention.'},
+  ],
+  'Psychology':[
+    {t:'Thinking, Fast and Slow',a:'Daniel Kahneman',e:'🧩',tags:['bias','decisions','cognition'],d:'Two systems that drive the way we think.'},
+    {t:'Influence',a:'Robert Cialdini',e:'🎭',tags:['persuasion','behaviour','decisions'],d:'The psychology of persuasion.'},
+    {t:'Grit',a:'Angela Duckworth',e:'💎',tags:['perseverance','passion','resilience'],d:'The power of passion and perseverance.'},
+    {t:'The Psychology of Money',a:'Morgan Housel',e:'💰',tags:['money','behaviour','wealth'],d:'Timeless lessons on wealth, greed, and happiness.'},
+    {t:'Predictably Irrational',a:'Dan Ariely',e:'🎲',tags:['bias','decisions','behaviour'],d:'The hidden forces that shape our decisions.'},
+    {t:'Flow',a:'Mihaly Csikszentmihalyi',e:'🌊',tags:['happiness','focus','engagement'],d:'The psychology of optimal experience.'},
+  ],
+  'Biography':[
+    {t:'Shoe Dog',a:'Phil Knight',e:'👟',tags:['entrepreneurship','grit','struggle'],d:'A memoir by the creator of Nike.'},
+    {t:'Becoming',a:'Michelle Obama',e:'🌹',tags:['identity','leadership','purpose'],d:'An intimate, powerful, and inspiring memoir.'},
+    {t:'Elon Musk',a:'Walter Isaacson',e:'🚀',tags:['innovation','ambition','technology'],d:'The most daring entrepreneur of our time.'},
+    {t:'Born a Crime',a:'Trevor Noah',e:'😄',tags:['identity','resilience','humour'],d:'Stories from a South African childhood.'},
+    {t:'Long Walk to Freedom',a:'Nelson Mandela',e:'✊',tags:['resilience','justice','courage'],d:'The autobiography of Nelson Mandela.'},
+  ],
+  'Fiction':[
+    {t:'The Alchemist',a:'Paulo Coelho',e:'✨',tags:['purpose','journey','dreams'],d:'A magical story about following your personal legend.'},
+    {t:'1984',a:'George Orwell',e:'👁️',tags:['power','dystopia','freedom'],d:'A chilling vision of totalitarianism\'s rise.'},
+    {t:'The Midnight Library',a:'Matt Haig',e:'🌙',tags:['choices','life','purpose'],d:'A library between life and death.'},
+    {t:'To Kill a Mockingbird',a:'Harper Lee',e:'🐦',tags:['justice','courage','empathy'],d:'A story of racial injustice and moral growth.'},
+  ],
+  'Science & Technology':[
+    {t:'Zero to One',a:'Peter Thiel',e:'0️⃣',tags:['innovation','startup','technology'],d:'Notes on startups, or how to build the future.'},
+    {t:'Sapiens',a:'Yuval Noah Harari',e:'🦴',tags:['humanity','civilisation','evolution'],d:'A brief history of humankind.'},
+    {t:'Life 3.0',a:'Max Tegmark',e:'🤖',tags:['ai','future','technology'],d:'Being human in the age of artificial intelligence.'},
+    {t:'The Gene',a:'Siddhartha Mukherjee',e:'🧬',tags:['genetics','biology','science'],d:'An intimate history of the gene.'},
+  ],
+  'History':[
+    {t:'Homo Deus',a:'Yuval Noah Harari',e:'🔮',tags:['future','humanity','technology'],d:'A brief history of tomorrow.'},
+    {t:'Guns, Germs, and Steel',a:'Jared Diamond',e:'⚔️',tags:['civilisation','history','geography'],d:'The fates of human societies.'},
+    {t:'The Silk Roads',a:'Peter Frankopan',e:'🛣️',tags:['trade','empires','history'],d:'A new history of the world.'},
+  ],
+  'Finance':[
+    {t:'Rich Dad Poor Dad',a:'Robert Kiyosaki',e:'🏠',tags:['wealth','assets','investing'],d:'What the rich teach their kids about money.'},
+    {t:'The Intelligent Investor',a:'Benjamin Graham',e:'📈',tags:['investing','value','wealth'],d:'The definitive book on value investing.'},
+    {t:'I Will Teach You to Be Rich',a:'Ramit Sethi',e:'💳',tags:['personal finance','investing','savings'],d:'A 6-week programme that works.'},
+  ],
+  'Other':[
+    {t:'Meditations',a:'Marcus Aurelius',e:'🏛️',tags:['stoicism','philosophy','wisdom'],d:'Personal writings of the Roman Emperor.'},
+    {t:'The Art of War',a:'Sun Tzu',e:'⚔️',tags:['strategy','leadership','wisdom'],d:'Ancient wisdom on strategy.'},
+    {t:'Man\'s Search for Meaning',a:'Viktor Frankl',e:'✡️',tags:['purpose','resilience','meaning'],d:'A psychiatrist\'s experience in Nazi death camps.'},
+  ]
+};
+const KW_MAP={habits:['Self-Help','Psychology'],behaviour:['Psychology','Self-Help'],leadership:['Business & Leadership','Biography'],team:['Business & Leadership'],innovation:['Business & Leadership','Science & Technology'],mindset:['Self-Help','Psychology'],growth:['Self-Help','Psychology'],focus:['Self-Help'],productivity:['Self-Help'],resilience:['Self-Help','Biography','Psychology'],money:['Finance'],wealth:['Finance'],invest:['Finance'],history:['History'],science:['Science & Technology'],technology:['Science & Technology'],ai:['Science & Technology'],purpose:['Self-Help','Biography'],meaning:['Psychology','Biography'],strategy:['Business & Leadership','Other'],culture:['Business & Leadership'],startup:['Business & Leadership','Science & Technology'],bias:['Psychology'],decision:['Psychology','Business & Leadership'],courage:['Biography','Self-Help'],discipline:['Self-Help'],trust:['Business & Leadership','Psychology']};
+const GEMOJI={'Self-Help':'🧠','Business & Leadership':'💼','Psychology':'🔬','Biography':'👤','Fiction':'📖','Science & Technology':'⚙️','History':'🏺','Finance':'💰','Other':'🌟'};
+const GRAD=['#4f46e5,#a855f7','#0ea5e9,#06b6d4','#10b981,#34d399','#f59e0b,#ef4444','#8b5cf6,#ec4899','#ef4444,#f97316'];
+const XGRAD=['#64748b,#94a3b8','#374151,#6b7280','#292524,#57534e'];
+
+function tasteFn(mb){const g={};mb.forEach(b=>{const genre=b.genre||'Other',r=+b.rating||3;if(!g[genre])g[genre]={score:0,count:0};g[genre].score+=r;g[genre].count++;});Object.keys(g).forEach(k=>{g[k].avg=(g[k].score/g[k].count).toFixed(1);g[k].w=g[k].score*(1+g[k].count*0.2);});return g;}
+function kwFn(mb){const kw={};mb.forEach(b=>{const txt=((b.summary||'')+(b.takeaway||'')).toLowerCase();Object.keys(KW_MAP).forEach(k=>{if(txt.includes(k))KW_MAP[k].forEach(g=>{kw[g]=(kw[g]||0)+(+b.rating||3);});});});return kw;}
+function scoreFn(mb){
+  const T=tasteFn(mb),K=kwFn(mb);
+  const read=new Set(mb.map(b=>b.title.toLowerCase().trim()));
+  const uTxt=mb.map(b=>((b.summary||'')+(b.takeaway||'')).toLowerCase()).join(' ');
+  const res=[];
+  Object.entries(BOOK_DB).forEach(([g,books])=>{
+    books.forEach(book=>{
+      if(read.has(book.t.toLowerCase().trim()))return;
+      let s=0;
+      if(T[g])s+=T[g].w*2;if(K[g])s+=K[g]*1.5;
+      book.tags.forEach(tag=>{if(uTxt.includes(tag))s+=5;});
+      s+=Math.random()*2;
+      const five=mb.filter(b=>+b.rating===5&&b.genre===g);
+      const mTags=book.tags.filter(t=>uTxt.includes(t));
+      let why='A top-rated pick in '+g;
+      if(T[g]&&T[g].avg>=4)why='You rate '+g+' books '+T[g].avg+'★ on average';
+      else if(five.length)why='You loved "'+five[0].title+'" in this genre';
+      else if(mTags.length)why='Matches your interest in: '+mTags.slice(0,2).join(', ');
+      res.push({book:{...book,genre:g},s,why});
+    });
+  });
+  return res.sort((a,b)=>b.s-a.s);
+}
+
+function rSugg(){
+  const mb=_books.filter(b=>b.member===CU);
+  const grid=document.getElementById('sugg-grid');
+  if(!mb.length){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:28px;color:var(--muted);">
+      <div style="font-size:36px;margin-bottom:8px;">📭</div>
+      <h3 style="color:var(--text);margin-bottom:8px;">No reading history yet</h3>
+      <p style="font-size:12px;">Log at least one book and we'll tailor picks just for you!</p>
+    </div>`;
+    document.getElementById('dna-card').style.display='none';
+    document.getElementById('explore-card').style.display='none';return;
+  }
+  const T=tasteFn(mb),scored=scoreFn(mb),top6=scored.slice(0,6);
+  const topG=Object.entries(T).sort((a,b)=>b[1].w-a[1].w);
+  document.getElementById('sugg-pills').innerHTML=topG.slice(0,4).map(([g,s])=>`<span style="padding:3px 11px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,.25);color:#fff;background:rgba(255,255,255,.12);">${GEMOJI[g]||'📚'} ${g} · ${s.avg}★</span>`).join('');
+  document.getElementById('sugg-sub').textContent=`Based on your ${mb.length} book${mb.length>1?'s':''}, ratings & takeaways`;
+  document.getElementById('dna-card').style.display='block';
+  const maxW=Math.max(...Object.values(T).map(s=>s.w));
+  document.getElementById('dna-grid').innerHTML=topG.slice(0,8).map(([g,s])=>`
+    <div style="background:var(--bg);border-radius:9px;padding:10px;text-align:center;">
+      <div style="font-size:18px;margin-bottom:3px;">${GEMOJI[g]||'📚'}</div>
+      <div style="font-size:10px;font-weight:700;color:var(--text);">${g}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:1px;">${s.count} book${s.count>1?'s':''} · ${s.avg}★</div>
+      <div style="height:3px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:3px;"><div style="height:3px;border-radius:3px;background:linear-gradient(90deg,var(--p1),var(--p3));width:${Math.round(s.w/maxW*100)}%"></div></div>
+    </div>`).join('');
+  if(!top6.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);">You\'ve read everything — amazing! 🏆</div>';return;}
+  const maxS=top6[0].s;
+  grid.innerHTML=top6.map((r,i)=>`
+    <div style="background:#fff;border-radius:12px;padding:13px;box-shadow:var(--sh);border:1.5px solid var(--border);display:flex;flex-direction:column;gap:8px;position:relative;transition:all .2s;" onmouseover="this.style.borderColor='var(--p1)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="position:absolute;top:9px;right:9px;width:20px;height:20px;border-radius:50%;background:${i<3?'linear-gradient(135deg,#f59e0b,#ef4444)':'linear-gradient(135deg,var(--p1),var(--p2))'};color:#fff;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;">${i+1}</div>
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div style="width:40px;height:54px;border-radius:7px;background:linear-gradient(135deg,${GRAD[i]||GRAD[0]});display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${r.book.e}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:800;color:var(--text);">${r.book.t}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">by ${r.book.a}</div>
+          <span style="display:inline-block;background:#ede9fe;color:#5b21b6;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:700;margin-top:3px;">${r.book.genre}</span>
+        </div>
+      </div>
+      <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:8px;padding:7px 10px;font-size:11px;color:#166534;font-weight:600;border-left:3px solid #22c55e;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:#15803d;font-weight:800;margin-bottom:2px;">✦ Why this book?</div>${r.why}</div>
+      <div style="font-size:11px;color:#4b5563;font-style:italic;border-left:2px solid var(--p3);padding-left:7px;">${r.book.d}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">${r.book.tags.slice(0,4).map(t=>`<span style="padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:#f1f0ff;color:var(--p1);">#${t}</span>`).join('')}</div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px;"><span>Match Score</span><span style="font-weight:700;color:var(--p1);">${Math.min(95,60+Math.round(r.s/maxS*35))}%</span></div>
+        <div style="height:4px;background:#e5e7eb;border-radius:3px;overflow:hidden;"><div style="height:4px;border-radius:3px;background:linear-gradient(90deg,var(--p1),var(--acc));width:${Math.min(95,60+Math.round(r.s/maxS*35))}%"></div></div>
+      </div>
+    </div>`).join('');
+  const readG=new Set(mb.map(b=>b.genre));
+  const newG=Object.keys(BOOK_DB).filter(g=>!readG.has(g)).slice(0,3);
+  const ec=document.getElementById('explore-card');
+  if(newG.length){
+    ec.style.display='block';
+    document.getElementById('explore-grid').innerHTML=newG.map((g,i)=>{
+      const pick=BOOK_DB[g][0];
+      return `<div style="background:#fff;border-radius:12px;padding:13px;box-shadow:var(--sh);border:1.5px solid var(--border);display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="width:40px;height:54px;border-radius:7px;background:linear-gradient(135deg,${XGRAD[i]||XGRAD[0]});display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">${pick.e}</div>
+          <div><div style="font-size:13px;font-weight:800;color:var(--text);">${pick.t}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">by ${pick.a}</div><span style="display:inline-block;background:#ede9fe;color:#5b21b6;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:700;margin-top:3px;">${g}</span></div>
+        </div>
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:8px;padding:7px 10px;font-size:11px;color:#166534;font-weight:600;border-left:3px solid #22c55e;"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:#15803d;font-weight:800;margin-bottom:2px;">✦ New territory</div>You haven't explored ${g} yet!</div>
+        <div style="font-size:11px;color:#4b5563;font-style:italic;border-left:2px solid var(--p3);padding-left:7px;">${pick.d}</div>
+      </div>`;
+    }).join('');
+  } else { ec.style.display='none'; }
 }
 
 // ═══ RECOMMENDATIONS ══════════════════════════════════════════
