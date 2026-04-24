@@ -666,10 +666,15 @@ async function logBook(e) {
 // ═══ LEADERBOARD ══════════════════════════════════════════════
 function rLB() {
   const el=document.getElementById('lbList');
-  const ranked=_members.map(m=>({
-    ...m, cnt:_books.filter(b=>b.member===m.name).length,
-    mb:_books.filter(b=>b.member===m.name)
-  })).sort((a,b)=>b.cnt-a.cnt);
+  // Build leaderboard from books data — catches anyone who logged a book
+  // even if they joined after the current user loaded the page
+  const nameSet = new Set(_books.map(b=>b.member));
+  // Also include all known members even if they haven't logged yet
+  _members.forEach(m=>nameSet.add(m.name));
+  const ranked=[...nameSet].map(name=>{
+    const m=_members.find(x=>x.name===name)||{name,ci:Math.abs(name.split('').reduce((a,c)=>a+c.charCodeAt(0),0))%10};
+    return {...m, name, cnt:_books.filter(b=>b.member===name).length, mb:_books.filter(b=>b.member===name)};
+  }).sort((a,b)=>b.cnt-a.cnt);
   if (!ranked.length){el.innerHTML='<div class="empty"><div class="ei">🏆</div><h3>No members yet</h3></div>';return;}
   el.innerHTML=ranked.map((m,i)=>{
     const ic=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
